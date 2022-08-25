@@ -6,6 +6,9 @@ public class CameraController : MonoBehaviour
 {
     private PlayerController playerController;
 
+    private float distance = 0;
+    private Vector3 offsetPos = Vector3.zero;
+
     private void Awake()
     {
         playerController = FindObjectOfType<PlayerController>();
@@ -13,14 +16,16 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         OffsetCam();
-        RotateCam();
+        //RotateCam();
     }
 
     void OffsetCam()
-    { 
-        Vector3 pos = playerController.transform.position;
-        pos.y += 1f;
-        transform.position = pos;
+    {
+        distance = Vector3.Distance(transform.position, playerController.transform.position);
+        offsetPos = (playerController.transform.position - transform.position).normalized;
+
+
+        transform.position = playerController.transform.position + (offsetPos * distance);
     }
     void RotateCam()
     { 

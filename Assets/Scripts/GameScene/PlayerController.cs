@@ -25,11 +25,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip           playerAudioRunClip;        // 플레이어 오디오 클립
     [SerializeField] private AudioClip           playerAudioJumpClip;       // 플레이어 오디오 클립
 
+    private float limitMinX = -80;
+    private float limitMaxX = 50;
+    private float eulerAngleX;
+    private float eulerAngleY;
+
     private void Awake()
     {
 
         characterController = GetComponent<CharacterController>();
-        animator            = GetComponent<Animator>();
+        animator            = GetComponentInChildren<Animator>();
         playerAudioSource   = GetComponentInChildren<AudioSource>();
     }
 
@@ -97,10 +102,16 @@ public class PlayerController : MonoBehaviour
     {
         float mouseXAxis = Input.GetAxis("Mouse X");
         float mouseYAxis = Input.GetAxis("Mouse Y");
-        mouseRot = new Vector3(-mouseYAxis, mouseXAxis, 0);
-        transform.Rotate(mouseRot * rotateSpeed);
-        
+
+        eulerAngleY += mouseXAxis * 3f;
+        eulerAngleX -= mouseYAxis * 3f;
+
+        eulerAngleX = Mathf.Clamp(eulerAngleX,limitMinX,limitMaxX);
+
+        transform.rotation = Quaternion.Euler(eulerAngleX, eulerAngleY, 0);
     }
+
+
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space))
